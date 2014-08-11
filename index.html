@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>How Far Should Micah Run Today</title>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="dashboard.js"></script>
+
+    <script>
+        var dateString = "";
+        var newDate = new Date();
+        dateString += (newDate.getMonth() + 1) + "/" + newDate.getDate();
+        
+        $.getJSON("running.json", function(data) {
+            $('.myMiles').html(data[dateString]);
+        });
+    </script>
+    <style type="text/css">
+        body{
+            background-color: blue;
+            font-size: 25px;
+            text-align: center;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <p></p>
+    <p>How far should Micah run today?</p>
+    <p><span class="myMiles">[]</span> miles!</p>
+
+
+</body>
+</html>
