@@ -6,28 +6,154 @@
     <script type="text/javascript" src="dashboard.js"></script>
 
     <script>
-        var dateString = "";
-        var newDate = new Date();
-        dateString += (newDate.getMonth() + 1) + "/" + newDate.getDate();
-        
+        var nextDays = 10;
+        var nextDistance = daysAhead(nextDays);
+        var fiveDateString = "";
+        var fiveDistanceString = "";
+        var tenDateString = "";
+        var tenDistanceString = "";
+
+
         $.getJSON("running.json", function(data) {
-            $('.myMiles').html(data[dateString]);
+            $('.myMiles').html(data[nextDistance[0]]);
+
+            for( var x = 0; x < 10; x++)
+            {
+                if( x < 5 )
+                {
+                    fiveDateString += "<td>" + nextDistance[x] + "</td>";
+                    fiveDistanceString += "<td>" + data[nextDistance[x]] + "</td>";
+                }
+                tenDateString += "<td>" + nextDistance[x] + "</td>";
+                tenDistanceString += "<td>" + data[nextDistance[x]] + "</td>";
+            }
+            $('#fivedates').html(fiveDateString);
+            $('#fivedistance').html(fiveDistanceString);
+            $('#tendates').html(tenDateString);
+            $('#tendistance').html(tenDistanceString);
         });
+
+        $(document).ready(function() {        
+            $('#nextfive').click(function(){
+                $('.today').css("visibility","hidden");
+                $('.tenDays').css("visibility","hidden");
+                $('.fiveDays').css("visibility","visible");
+                $('#nextfive').css("visibility","hidden");
+                $('#current').css("visibility","visible");
+                $('#nextten').css("visibility","visible");
+            });
+            $('#nextten').click(function(){
+                $('.today').css("visibility","hidden");
+                $('.fiveDays').css("visibility","hidden");
+                $('.tenDays').css("visibility","visible");
+                $('#current').css("visibility","visible");
+                $('#nextfive').css("visibility","visible");
+                $('#nextten').css("visibility","hidden");
+            });
+            $('#current').click(function(){
+                $('.today').css("visibility","visible");
+                $('.fiveDays').css("visibility","hidden");
+                $('.tenDays').css("visibility","hidden");
+                $('#current').css("visibility","hidden");
+                $('#nextfive').css("visibility","visible");
+                $('#nextten').css("visibility","visible");
+            });
+        });
+
+        function daysAhead( numDays )
+        {
+            var dateMultiplier = 86400000; // 24 * 60 * 60 * 1000
+            var outDates = new Array(numDays);
+            
+            for( var x = 0; x < numDays; x++ )
+            {
+                var nextDay = new Date( new Date().getTime() + x * dateMultiplier );
+                outDates[x] = (nextDay.getMonth() + 1) + "/" + nextDay.getDate();
+            }
+            
+            return outDates;
+        }
+
+
     </script>
+    
     <style type="text/css">
         body{
             background-color: blue;
             font-size: 25px;
-            text-align: center;
             color: white;
+        }
+        .fixed{
+            position:fixed;
+        }
+        .today{
+            visibility: visible;
+        }
+
+        .fiveDays{
+            visibility: hidden;
+        }
+
+        .tenDays{
+            visibility: hidden;
+        }
+
+        table{
+            margin: auto;
+        }
+
+        td{
+            padding-left: 15px;
+        }
+        #current{
+            visibility: hidden;
+        }
+        #nextfive{
+            visibility: visible;
+        }
+        #nextten{
+            visibility: visible;
+        }
+        a{
+            color:white;
+        }
+        .next{
+            padding-top: 150px;
         }
     </style>
 </head>
+
 <body>
     <p></p>
-    <p>How far should Micah run today?</p>
-    <p><span class="myMiles">[]</span> miles!</p>
+    <div class="today fixed">
+        <p>How far should Micah run today?</p>
+        <p><span class="myMiles">[]</span> miles!</p>
+    </div>
+    
+    <div class="fiveDays fixed">
+        <p>How far should Micah run for the next five days?</p>
+        <table>
+            <tr id="fivedates">
+            </tr>
+            <tr id="fivedistance">
+            </tr>
+        </table>
+    </div>
 
+    <div class="tenDays fixed">
+        <p>How far should Micah run for the next ten days?</p>
+        <table>
+            <tr id="tendates">
+            </tr>
+            <tr id="tendistance">
+            </tr>
+        </table>
+    </div>
+    <div class="next">
+        <div id="current" class="fixed">Today</div><br>
+        <div id="nextfive" class="fixed">Next 5 days</div><br>
+        <div id="nextten" class="fixed">Next 10 days</div>
+    </div>
 
 </body>
 </html>
